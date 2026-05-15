@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { boolean, integer, pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const usersTable = pgTable('users', {
   id: uuid()
@@ -9,8 +9,8 @@ export const usersTable = pgTable('users', {
   email: varchar({ length: 255 }).notNull().unique(),
   phone: varchar({ length: 15 }).notNull().unique(),
   passwordHash: text().notNull(),
-  updatedAt: integer().notNull().default(Date.now()),
-  createdAt: integer().notNull().default(Date.now()),
+  createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
 
 export const accountsTable = pgTable('accounts', {
@@ -24,8 +24,8 @@ export const accountsTable = pgTable('accounts', {
   balance: integer().notNull().default(0),
   currency: varchar({ length: 3 }).notNull().default('INR'),
   status: varchar({ length: 20 }).notNull().default('ACTIVE'),
-  updatedAt: integer().notNull().default(Date.now()),
-  createdAt: integer().notNull().default(Date.now()),
+  createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
 
 export const transactionsTable = pgTable('transactions', {
@@ -39,6 +39,6 @@ export const transactionsTable = pgTable('transactions', {
   amount: integer().notNull(),
   status: varchar({ length: 20 }).notNull(),
   isFraud: boolean().default(false),
-  updatedAt: integer().notNull().default(Date.now()),
-  createdAt: integer().notNull().default(Date.now()),
+  createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });

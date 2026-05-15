@@ -1,5 +1,5 @@
 {
-  "id": "50af23fb-1367-4d91-83e4-8d11e6da374b",
+  "id": "2eab327c-08f2-495e-8e47-2fa349eaef3e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -50,9 +50,17 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -121,9 +129,17 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -177,11 +193,25 @@
           "primaryKey": false,
           "notNull": true
         },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "integer",
+        "passwordHash": {
+          "name": "passwordHash",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         }
       },
       "indexes": {},

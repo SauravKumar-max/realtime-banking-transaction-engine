@@ -5,7 +5,8 @@ CREATE TABLE "accounts" (
 	"balance" integer DEFAULT 0 NOT NULL,
 	"currency" varchar(3) DEFAULT 'INR' NOT NULL,
 	"status" varchar(20) DEFAULT 'ACTIVE' NOT NULL,
-	"createdAt" integer NOT NULL
+	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "transactions" (
@@ -15,7 +16,8 @@ CREATE TABLE "transactions" (
 	"amount" integer NOT NULL,
 	"status" varchar(20) NOT NULL,
 	"isFraud" boolean DEFAULT false,
-	"createdAt" integer NOT NULL
+	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -23,7 +25,9 @@ CREATE TABLE "users" (
 	"name" varchar(255) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"phone" varchar(15) NOT NULL,
-	"createdAt" integer NOT NULL,
+	"passwordHash" text NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT now() NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email"),
 	CONSTRAINT "users_phone_unique" UNIQUE("phone")
 );

@@ -8,6 +8,8 @@
     "dev": "tsx watch src/server.ts",
     "test": "vitest run",
     "build": "tsc",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
