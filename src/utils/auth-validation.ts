@@ -1,4 +1,5 @@
-import type { RegisterUserInput } from '../types/auth.types.js';
+import type { LoginCredentialsInput, RegisterUserInput } from '../types/auth.types.js';
+import type { ValidationDetail } from '../types/error.types.js';
 
 import { validationError } from '../utils/error.js';
 
@@ -12,48 +13,92 @@ const MAX_NAME_LENGTH = 255;
 const MAX_EMAIL_LENGTH = 255;
 const MIN_PASSWORD_LENGTH = 8;
 
-type ValidationDetail = {
-  field: string;
-  message: string;
-};
-
 export function parseRegisterUserInput(body: Record<string, unknown>): RegisterUserInput {
   const errors: ValidationDetail[] = [];
 
-  const name = validateName(body.name, errors);
-  const email = validateEmail(body.email, errors);
-  const phone = validatePhone(body.phone, errors);
-  const password = validatePassword(body.password, errors);
+  const name = requiredString(body.name, 'name', 'Name is required.', errors);
+  const email = requiredString(body.email, 'email', 'Email is required.', errors);
+  const phone = requiredString(body.phone, 'phone', 'Phone is required.', errors);
+  const password = requiredString(body.password, 'password', 'Password is required.', errors);
+
+  const validatedName = validateName(name, errors);
+  const validatedEmail = validateEmail(email, errors);
+  const validatedPhone = validatePhone(phone, errors);
+  const validatedPassword = validatePassword(password, errors);
 
   if (errors.length > 0) {
     throw validationError('Invalid registration data.', errors);
   }
 
   return {
-    name,
-    email,
-    phone,
+    name: validatedName,
+    email: validatedEmail,
+    phone: validatedPhone,
+    password: validatedPassword,
+  };
+}
+
+export function parseUserCredentials(body: Record<string, unknown>): LoginCredentialsInput {
+  const errors: ValidationDetail[] = [];
+
+  const hasEmail = typeof body.email === 'string' && body.email.trim().length > 0;
+  const hasPhone = typeof body.phone === 'string' && body.phone.trim().length > 0;
+
+  if (!hasEmail && !hasPhone) {
+    errors.push({
+      field: 'identifier',
+      message: 'Either email or phone is required.',
+    });
+  }
+
+  if (hasEmail && hasPhone) {
+    errors.push({
+      field: 'identifier',
+      message: 'Provide either email or phone, not both.',
+    });
+  }
+
+  const password = requiredString(body.password, 'password', 'Password is required.', errors);
+
+  let type: 'EMAIL' | 'PHONE' = 'EMAIL';
+  let value = '';
+
+  if (hasEmail) {
+    type = 'EMAIL';
+    value = validateEmail(body.email as string, errors);
+  }
+
+  if (hasPhone) {
+    type = 'PHONE';
+    value = validatePhone(body.phone as string, errors);
+  }
+
+  if (errors.length > 0) {
+    throw validationError('Invalid login credentials.', errors);
+  }
+
+  return {
+    type,
+    value,
     password,
   };
 }
 
-function validateName(value: unknown, errors: ValidationDetail[]): string {
-  if (typeof value !== 'string') {
+function requiredString(value: unknown, field: string, message: string, errors: ValidationDetail[]): string {
+  if (typeof value !== 'string' || value.trim().length === 0) {
     errors.push({
-      field: 'name',
-      message: 'Name is required.',
+      field,
+      message,
     });
+
     return '';
   }
 
-  const name = value.trim().replace(/\s+/g, ' ');
+  return value.trim();
+}
 
-  if (name.length === 0) {
-    errors.push({
-      field: 'name',
-      message: 'Name is required.',
-    });
-  }
+function validateName(value: string, errors: ValidationDetail[]): string {
+  const name = value.trim().replace(/\s+/g, ' ');
 
   if (name.length < MIN_NAME_LENGTH) {
     errors.push({
@@ -72,24 +117,8 @@ function validateName(value: unknown, errors: ValidationDetail[]): string {
   return name;
 }
 
-function validateEmail(value: unknown, errors: ValidationDetail[]): string {
-  if (typeof value !== 'string') {
-    errors.push({
-      field: 'email',
-      message: 'Email is required.',
-    });
-
-    return '';
-  }
-
+function validateEmail(value: string, errors: ValidationDetail[]): string {
   const email = value.trim().toLowerCase();
-
-  if (email.length === 0) {
-    errors.push({
-      field: 'email',
-      message: 'Email is required.',
-    });
-  }
 
   if (email.length > MAX_EMAIL_LENGTH) {
     errors.push({
@@ -108,24 +137,8 @@ function validateEmail(value: unknown, errors: ValidationDetail[]): string {
   return email;
 }
 
-function validatePhone(value: unknown, errors: ValidationDetail[]): string {
-  if (typeof value !== 'string') {
-    errors.push({
-      field: 'phone',
-      message: 'Phone is required.',
-    });
-
-    return '';
-  }
-
+function validatePhone(value: string, errors: ValidationDetail[]): string {
   const phone = value.replace(/\D/g, '');
-
-  if (phone.length === 0) {
-    errors.push({
-      field: 'phone',
-      message: 'Phone is required.',
-    });
-  }
 
   if (!PHONE_REGEX.test(phone)) {
     errors.push({
@@ -137,24 +150,8 @@ function validatePhone(value: unknown, errors: ValidationDetail[]): string {
   return phone;
 }
 
-function validatePassword(value: unknown, errors: ValidationDetail[]): string {
-  if (typeof value !== 'string') {
-    errors.push({
-      field: 'password',
-      message: 'Password is required.',
-    });
-
-    return '';
-  }
-
+function validatePassword(value: string, errors: ValidationDetail[]): string {
   const password = value.trim();
-
-  if (password.length === 0) {
-    errors.push({
-      field: 'password',
-      message: 'Password is required.',
-    });
-  }
 
   if (password.length < MIN_PASSWORD_LENGTH) {
     errors.push({

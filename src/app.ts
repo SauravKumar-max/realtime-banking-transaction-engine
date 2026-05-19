@@ -3,10 +3,12 @@ import { getHealthStatus, getWelcomeMessage } from './controllers/system.control
 import { notFoundHandler } from './middlewares/not-found.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import { errorHandler } from './middlewares/error-handler.middleware.js';
+import { sessionMiddleware } from './middlewares/session.middleware.js';
 
 const app = express();
 
 app.use(express.json());
+app.use(sessionMiddleware);
 
 app.get('/', getWelcomeMessage);
 app.get('/health', getHealthStatus);

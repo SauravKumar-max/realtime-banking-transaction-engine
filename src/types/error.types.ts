@@ -4,3 +4,8 @@ export type AppError = {
   message: string;
   details?: unknown;
 };
+
+export type ValidationDetail = {
+  field: string;
+  message: string;
+};

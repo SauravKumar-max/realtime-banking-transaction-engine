@@ -11,3 +11,9 @@ export type CreateUserData = {
   phone: string;
   passwordHash: string;
 };
+
+export type LoginCredentialsInput = {
+  type: 'EMAIL' | 'PHONE';
+  value: string;
+  password: string;
+};
