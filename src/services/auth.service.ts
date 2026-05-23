@@ -1,10 +1,9 @@
 import { eq, or } from 'drizzle-orm';
-import { verify } from 'argon2';
 import { db } from '../db/connection.js';
 import { usersTable } from '../db/schema.js';
 import { publicUserColumns, type PublicUser } from '../db/selections/user.selection.js';
 import type { LoginCredentialsInput, RegisterUserInput } from '../types/auth.types.js';
-import { hashPassword } from '../utils/password.js';
+import { hashPassword, verifyPassword } from '../utils/password.js';
 import { conflictError, notFoundError, unauthorizedError } from '../utils/error.js';
 
 export async function registerUserInService(input: RegisterUserInput): Promise<PublicUser> {
@@ -53,7 +52,7 @@ export async function loginUserInService(credentials: LoginCredentialsInput) {
     throw unauthorizedError('Invalid email/phone.');
   }
 
-  const isPasswordValid = await verify(user.passwordHash, password);
+  const isPasswordValid = await verifyPassword(user.passwordHash, password);
 
   if (!isPasswordValid) {
     throw unauthorizedError('Incorrect password.');
@@ -68,7 +67,7 @@ export async function loginUserInService(credentials: LoginCredentialsInput) {
   };
 }
 
-export async function getAuthenticatedUserInService(userId: string): Promise<PublicUser> {
+export async function getAuthenticatedUser(userId: string): Promise<PublicUser> {
   const users = await db.select(publicUserColumns).from(usersTable).where(eq(usersTable.id, userId)).limit(1);
 
   const user = users[0];

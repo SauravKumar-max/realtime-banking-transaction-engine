@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { getAuthenticatedUserInService, loginUserInService, registerUserInService } from '../services/auth.service.js';
-import { parseRegisterUserInput, parseUserCredentials } from '../utils/auth-validation.js';
+import { getAuthenticatedUser, loginUserInService, registerUserInService } from '../services/auth.service.js';
+import { parseRegisterUserInput, parseUserCredentials } from '../validators/auth.validator.js';
 
 export async function registerUser(req: Request, res: Response) {
   const userInput = parseRegisterUserInput(req.body);
@@ -27,7 +27,7 @@ export async function loginUser(req: Request, res: Response) {
 
 export async function getCurrentUser(req: Request, res: Response) {
   const userId = req.session.userId!;
-  const user = await getAuthenticatedUserInService(userId);
+  const user = await getAuthenticatedUser(userId);
 
   return res.status(200).json({
     user,
