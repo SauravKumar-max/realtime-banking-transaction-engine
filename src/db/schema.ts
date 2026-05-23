@@ -1,5 +1,12 @@
 import { sql } from 'drizzle-orm';
-import { boolean, integer, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, integer, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { ACCOUNT_STATUSES, ACCOUNT_TYPES } from '../types/account.types.js';
+import { TRANSACTION_STATUSES, TRANSACTION_TYPES } from '../types/transaction.types.js';
+
+export const accountTypeEnum = pgEnum('account_type', ACCOUNT_TYPES);
+export const accountStatusEnum = pgEnum('account_status', ACCOUNT_STATUSES);
+export const transactionTypeEnum = pgEnum('transaction_type', TRANSACTION_TYPES);
+export const transactionStatusEnum = pgEnum('transaction_status', TRANSACTION_STATUSES);
 
 export const usersTable = pgTable('users', {
   id: uuid()
@@ -20,10 +27,10 @@ export const accountsTable = pgTable('accounts', {
   userId: uuid()
     .notNull()
     .references(() => usersTable.id),
-  type: varchar({ length: 20 }).notNull(),
+  type: accountTypeEnum().notNull(),
   balance: integer().notNull().default(0),
   currency: varchar({ length: 3 }).notNull().default('INR'),
-  status: varchar({ length: 20 }).notNull().default('ACTIVE'),
+  status: accountStatusEnum().notNull().default('ACTIVE'),
   createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
 });
@@ -35,9 +42,9 @@ export const transactionsTable = pgTable('transactions', {
   accountId: uuid()
     .notNull()
     .references(() => accountsTable.id),
-  type: varchar({ length: 10 }).notNull(),
+  type: transactionTypeEnum().notNull(),
   amount: integer().notNull(),
-  status: varchar({ length: 20 }).notNull(),
+  status: transactionStatusEnum().notNull(),
   isFraud: boolean().default(false),
   createdAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp({ withTimezone: true }).defaultNow().notNull(),
