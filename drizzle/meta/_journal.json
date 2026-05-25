@@ -15,6 +15,20 @@
       "when": 1779211474154,
       "tag": "0001_numerous_onslaught",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779723817142,
+      "tag": "0002_long_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1779727055011,
+      "tag": "0003_busy_gabe_jones",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "transactions" ADD COLUMN "ip_address" "inet" NOT NULL;
