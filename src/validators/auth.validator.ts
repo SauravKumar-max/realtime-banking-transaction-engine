@@ -2,6 +2,7 @@ import type { LoginCredentialsInput, RegisterUserInput } from '../types/auth.typ
 import type { ValidationDetail } from '../types/error.types.js';
 
 import { validationError } from '../utils/error.js';
+import { requiredString } from './validator.utils.js';
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -82,19 +83,6 @@ export function parseUserCredentials(body: Record<string, unknown>): LoginCreden
     value,
     password,
   };
-}
-
-function requiredString(value: unknown, field: string, message: string, errors: ValidationDetail[]): string {
-  if (typeof value !== 'string' || value.trim().length === 0) {
-    errors.push({
-      field,
-      message,
-    });
-
-    return '';
-  }
-
-  return value.trim();
 }
 
 function validateName(value: string, errors: ValidationDetail[]): string {
