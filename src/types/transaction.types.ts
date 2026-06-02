@@ -20,3 +20,11 @@ export type CreateTransactionInput = {
   ipAddress: string;
   deviceFingerprint?: string;
 };
+
+export type Transaction = {
+  id: string;
+  transactionId: string;
+  accountId: string;
+  type: TransactionType;
+  amount: number
+}

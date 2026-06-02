@@ -1,0 +1,2 @@
+ALTER TABLE "transactions" DROP CONSTRAINT "transactions_transaction_id_unique";--> statement-breakpoint
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_transaction_id_unique" UNIQUE("account_id","transaction_id");

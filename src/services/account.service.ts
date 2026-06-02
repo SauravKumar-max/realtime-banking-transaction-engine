@@ -46,3 +46,8 @@ export async function createAccountInService(
 
   return accountWithUser;
 }
+
+export async function getAccountByAccountId(accountId: string) {
+  const account =  await db.select().from(accountsTable).where(eq(accountsTable.id, accountId)).limit(1);
+  return account[0];
+}

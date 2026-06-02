@@ -10,6 +10,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -61,7 +62,7 @@ export const transactionsTable = pgTable(
       .notNull()
       .references(() => accountsTable.id),
     type: transactionTypeEnum('type').notNull(),
-    transactionId: text('transaction_id').unique().notNull(),
+    transactionId: text('transaction_id').notNull(),
     balanceBefore: bigint('balance_before', { mode: 'bigint' }),
     amount: bigint('amount', { mode: 'bigint' }).notNull(),
     balanceAfter: bigint('balance_after', { mode: 'bigint' }),
@@ -76,6 +77,10 @@ export const transactionsTable = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => ({
+    transactionsAccountIdTransactionIdUnique: unique('transactions_account_id_transaction_id_unique').on(
+      table.accountId,
+      table.transactionId,
+    ),
     transactionsCorrelationIdIdx: index('transactions_correlation_id_idx').on(table.correlationId),
   }),
 );

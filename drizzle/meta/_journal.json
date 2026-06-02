@@ -43,6 +43,13 @@
       "when": 1780059687439,
       "tag": "0005_giant_piledriver",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1780400942282,
+      "tag": "0006_narrow_shadowcat",
+      "breakpoints": true
     }
   ]
 }
